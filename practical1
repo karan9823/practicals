@@ -1,0 +1,134 @@
+#!/bin/bash
+
+createAddressBook() {
+    if [ -e "addressbook.txt" ]; then
+        echo "Address Book already exists."
+    else
+        touch addressbook.txt
+        echo "Address book created."
+    fi
+}
+
+insertARecord() {
+    echo
+    while true; do
+        echo "Enter a record in the format: \"last name,first name,email,phone number\"."
+        echo "Example: verma,rajat,rajatverma@gmail.com,1234567890"
+        echo "To quit, press 'q'."
+        read aInput
+        if [ "$aInput" == "q" ]; then
+            break
+        fi
+        echo "$aInput" >> addressbook.txt
+        echo "Record inserted into address book."
+        echo
+    done
+}
+
+viewRecord() {
+    echo
+    while true; do
+        echo "Enter the last name of the person (case sensitive) to display a record."
+        echo "To quit, press 'q'."
+        read dInput
+        if [ "$dInput" == "q" ]; then
+            break
+        fi
+        echo "Displaying records for \"$dInput\":"
+        grep "^$dInput" addressbook.txt
+        if [ $? -ne 0 ]; then
+            echo "No records found with the last name \"$dInput\"."
+        fi
+        echo
+    done
+}
+
+modifyRecord() {
+    echo
+    while true; do
+        echo "Enter a search string (e.g., last name or email) to modify a record."
+        echo "To quit, press 'q'."
+        read eInput
+        if [ "$eInput" == "q" ]; then
+            break
+        fi
+        echo "Listing records for \"$eInput\":"
+        grep -n "$eInput" addressbook.txt
+        if [ $? -ne 0 ]; then
+            echo "No records found for \"$eInput\"."
+        else
+            echo "Enter the line number of the record you want to edit:"
+            read lineNumber
+            echo "Enter the new record in the format: \"last name,first name,email,phone number\"."
+            read edit
+            sed -i "${lineNumber}s/.*/$edit/" addressbook.txt
+            echo "Record updated."
+        fi
+        echo
+    done
+}
+
+deleteRecord() {
+    echo
+    while true; do
+        echo "Enter a search string (e.g., last name or email) to remove a record."
+        echo "To quit, press 'q'."
+        read rInput
+        if [ "$rInput" == "q" ]; then
+            break
+        fi
+        echo "Listing records for \"$rInput\":"
+        grep -n "$rInput" addressbook.txt
+        if [ $? -ne 0 ]; then
+            echo "No records found for \"$rInput\"."
+        else
+            echo "Enter the line number of the record you want to remove:"
+            read lineNumber
+            sed -i "${lineNumber}d" addressbook.txt
+            echo "Record removed from the address book."
+        fi
+        echo
+    done
+}
+
+searchRecord() {
+    echo
+    while true; do
+        echo "Enter a search string (e.g., last name or email) to search for a record."
+        echo "To quit, press 'q'."
+        read sInput
+        if [ "$sInput" == "q" ]; then
+            break
+        fi
+        echo "Searching for records matching \"$sInput\":"
+        grep "$sInput" addressbook.txt
+        if [ $? -ne 0 ]; then
+            echo "No records found for \"$sInput\"."
+        fi
+        echo
+    done
+}
+
+# Main Menu
+echo "Welcome to the Address Book!"
+while true; do
+    echo "Choose an option:"
+    echo "1) Create Address Book"
+    echo "2) Insert a Record"
+    echo "3) View Records"
+    echo "4) Modify a Record"
+    echo "5) Delete a Record"
+    echo "6) Search Records"
+    echo "7) Exit"
+    read input
+    case $input in
+        1) createAddressBook ;;
+        2) insertARecord ;;
+        3) viewRecord ;;
+        4) modifyRecord ;;
+        5) deleteRecord ;;
+        6) searchRecord ;;
+        7) exit ;;
+        *) echo "Invalid option. Please try again." ;;
+    esac
+done
