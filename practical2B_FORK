@@ -25,4 +25,4 @@ printf("\n Element found in given array");
 else
 printf("\n Elements not found in given array");
 return 0;
-}
+} 
